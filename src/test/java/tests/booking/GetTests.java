@@ -2,8 +2,8 @@ package tests.booking;
 
 import api.CreateBooking;
 import models.booking.Bookingid;
-import models.booking.GetBookingRequest;
 import models.booking.GetBookingResponse;
+import models.booking.GetFullBookingRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -18,15 +18,14 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static specs.GeneralSpec.*;
 
-@DisplayName("Проверка получения списка бронирований")
+@DisplayName("Проверка получения идентификаторов всех бронирований, которые существуют в API или по определённым критериям")
 @Tag("booking_api")
 public class GetTests extends TestBase {
-
-    CreateBooking createBooking = new CreateBooking();
+    final CreateBooking createBooking = new CreateBooking();
 
     @Test
-    @DisplayName("Successful returns the ids of all the bookings that exist within the API. Can take optional query strings to search and return a subset of booking ids.")
-    public void successfulGetBookingIdsTest() {
+    @DisplayName("Получение всех действительных бронирований")
+    public void successfulGetBookingIdsWithoutAuthTest() {
         Bookingid[] responseData = step("Отправить запрос на получение бронирований", () ->
                 given(requestSpecificationWithoutAuth)
                         .when()
@@ -36,21 +35,19 @@ public class GetTests extends TestBase {
                         .extract().as(Bookingid[].class));
 
         step("Проверить данные в ответе", () -> {
-            assertThat(responseData[0].getBookingid()).isNotZero();
+            assertThat(responseData[0].getBookingid()).isGreaterThan(0);
             assertThat(responseData.length).isGreaterThan(100);
-
         });
     }
 
     @Test
-    @DisplayName("Successful with by name returns the ids of all the bookings that exist within the API. Can take optional query strings to search and return a subset of booking ids.")
-    public void successfulGetBookingIdsWithFilterNameThenEmptyResultsTest() {
+    @DisplayName("Получение всех действительных бронирований по фамилии и имени c 0 результатом")
+    public void successfulGetBookingIdsWithFilterNameThenEmptyResultsWithoutAuthTest() {
         Bookingid[] responseData = step("Отправить запрос на получение бронирований по имени", () ->
-
                 given(requestSpecificationWithoutAuth)
                         .when()
-                        .queryParam("firstname", "sally")
-                        .queryParam("lastname", "brown")
+                        .queryParam("firstname", "sallyцуй23123ё!;%")
+                        .queryParam("lastname", "b3472688%^#$!rown")
                         .get("/booking")
                         .then()
                         .spec(responseSpecification200)
@@ -62,9 +59,9 @@ public class GetTests extends TestBase {
     }
 
     @Test
-    @DisplayName("Successful with by name returns the ids of all the bookings that exist within the API. Can take optional query strings to search and return a subset of booking ids.")
-    public void successfulGetBookingIdsWithFilterNameThenNotEmptyResultsTest() {
-        GetBookingResponse testData = createBooking.successfulCreateBooking();
+    @DisplayName("Получение всех действительных бронирований по фамилии и имени с результатом")
+    public void successfulGetBookingIdsWithFilterNameThenNotEmptyResultsWithoutAuthTest() {
+        GetBookingResponse testData = createBooking.successFullDataCreateBooking();
         Bookingid[] responseData = step("Отправить запрос на получение бронирований по имени", () ->
                 given(requestSpecificationWithoutAuth)
                         .when()
@@ -85,8 +82,8 @@ public class GetTests extends TestBase {
     }
 
     @Test
-    @DisplayName("Successful with by checkin/checkout date returns the ids of all the bookings that exist within the API. Can take optional query strings to search and return a subset of booking ids.")
-    public void successfulGetBookingIdsWithFilterCheckinCheckoutThenNotEmptyResultsTest() {
+    @DisplayName("Получение всех действительных бронирований по дате заселения и выезда с результатом")
+    public void successfulGetBookingIdsWithFilterCheckinCheckoutThenNotEmptyResultsWithoutAuthTest() {
         Bookingid[] responseData = step("Отправить запрос на получение бронирований по дате заезда и выезда", () ->
                 given(requestSpecificationWithoutAuth)
                         .when()
@@ -104,8 +101,8 @@ public class GetTests extends TestBase {
     }
 
     @Test
-    @DisplayName("Unsuccessful with by checkin/checkout date returns the ids of all the bookings that exist within the API. Can take optional query strings to search and return a subset of booking ids.")
-    public void unsuccessfulGetBookingIdsWithFilterCheckinCheckoutError500Test() {
+    @DisplayName("Получение всех действительных бронирований по дате заселения и выезда с ошибочной датой")
+    public void unsuccessfulGetBookingIdsWithFilterCheckinCheckoutError500WithoutAuthTest() {
         step("Отправить запрос на получение бронирований по дате заезда и выезда и проверка кода ответа", () ->
                 given(requestSpecificationWithoutAuth)
                         .when()
@@ -117,8 +114,8 @@ public class GetTests extends TestBase {
     }
 
     @Test
-    @DisplayName("Unsuccessful returns a specific booking based upon the booking id provided")
-    public void unsuccessfulGetBookingById404Test() {
+    @DisplayName("Получение всех действительных бронирований с недействительным ID")
+    public void unsuccessfulGetBookingById404WithoutAuthTest() {
         step("Отправить запрос на получение конкретного бронирования по идентификатору бронирования и проверка кода ответа", () ->
                 given(requestSpecificationWithoutAuth)
                         .when()
@@ -128,26 +125,26 @@ public class GetTests extends TestBase {
     }
 
     @Test
-    @DisplayName("Successful returns a specific booking based upon the booking id provided")
-    public void successfulGetBookingByIdResult1Test() {
-        GetBookingResponse testData = createBooking.successfulCreateBooking();
+    @DisplayName("Получение информации о бронировании по действительному ID")
+    public void successfulGetBookingByIdResult1WithoutAuthTest() {
+        GetBookingResponse testData = createBooking.successFullDataCreateBooking();
 
-        GetBookingRequest responseData = step("Отправить запрос на получение конкретного бронирования по идентификатору бронирования", () ->
+        GetFullBookingRequest responseData = step("Отправить запрос на получение конкретного бронирования по идентификатору бронирования", () ->
                 given(requestSpecificationWithoutAuth)
                         .when()
                         .get("/booking/" + testData.getBookingid())
                         .then()
                         .spec(responseSpecification200)
-                        .extract().as(GetBookingRequest.class));
+                        .extract().as(GetFullBookingRequest.class));
 
         step("Проверить данные в ответе", () -> {
-            assertThat(responseData.getFirstname()).isEqualTo("Jimbo");
-            assertThat(responseData.getLastname()).isEqualTo("Bird");
-            assertThat(responseData.getTotalprice()).isEqualTo(9548347);
-            assertThat(responseData.getBookingdates().getCheckin()).isEqualTo("3025-12-31");
-            assertThat(responseData.getBookingdates().getCheckout()).isEqualTo("5000-01-01");
-            assertThat(responseData.isDepositpaid()).isEqualTo(false);
-            assertThat(responseData.getAdditionalneeds()).isEqualTo("Breakfast, diner");
+            assertThat(responseData.getFirstname()).isEqualTo(testData.getBooking().getFirstname());
+            assertThat(responseData.getLastname()).isEqualTo(testData.getBooking().getLastname());
+            assertThat(responseData.getTotalprice()).isEqualTo(testData.getBooking().getTotalprice());
+            assertThat(responseData.getBookingdates().getCheckin()).isEqualTo(testData.getBooking().getBookingdates().getCheckin());
+            assertThat(responseData.getBookingdates().getCheckout()).isEqualTo(testData.getBooking().getBookingdates().getCheckout());
+            assertThat(responseData.isDepositpaid()).isEqualTo(testData.getBooking().isDepositpaid());
+            assertThat(responseData.getAdditionalneeds()).isEqualTo(testData.getBooking().getAdditionalneeds());
         });
     }
 }

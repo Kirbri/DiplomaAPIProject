@@ -1,8 +1,8 @@
 package tests.booking;
 
 import models.booking.BookingDates;
-import models.booking.GetBookingRequest;
 import models.booking.GetBookingResponse;
+import models.booking.GetFullBookingRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -13,19 +13,19 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static specs.GeneralSpec.*;
 
-@DisplayName("Проверка создания бронирования")
+@DisplayName("Создание нового бронирование в API")
 @Tag("booking_api")
 public class PostTests extends TestBase {
 
     @Test
-    @DisplayName("Successful creates a new booking in the API")
+    @DisplayName("Создание успешного бронирования с полными данными")
     public void successfulPostCreateBookingTest() {
-        GetBookingRequest requestData = step("Подготовить данные для создания бронирования", () -> {
+        GetFullBookingRequest requestData = step("Подготовить данные для создания бронирования", () -> {
             BookingDates bookingDates = new BookingDates();
             bookingDates.setCheckin("2025-01-01");
             bookingDates.setCheckout("2026-01-01");
 
-            GetBookingRequest data = new GetBookingRequest();
+            GetFullBookingRequest data = new GetFullBookingRequest();
             data.setFirstname("Jim");
             data.setLastname("Brown");
             data.setTotalprice(111);
@@ -57,14 +57,14 @@ public class PostTests extends TestBase {
     }
 
     @Test
-    @DisplayName("Successful creates a new booking in the API")
+    @DisplayName("Создание успешного бронирования с пустыми строковыми данными")
     public void successfulPostCreateBookingWithEmptyFieldsTest() {
-        GetBookingRequest requestData = step("Подготовить данные для создания бронирования", () -> {
+        GetFullBookingRequest requestData = step("Подготовить данные для создания бронирования", () -> {
             BookingDates bookingDates = new BookingDates();
             bookingDates.setCheckin("");
             bookingDates.setCheckout("");
 
-            GetBookingRequest data = new GetBookingRequest();
+            GetFullBookingRequest data = new GetFullBookingRequest();
             data.setFirstname("");
             data.setLastname("");
             data.setBookingdates(bookingDates);
@@ -94,12 +94,12 @@ public class PostTests extends TestBase {
     }
 
     @Test
-    @DisplayName("Unsuccessful creates a new booking in the API")
+    @DisplayName("Создание неуспешного бронирования со строковыми данными равными null")
     public void unsuccessfulPostCreateBooking500Test() {
-        GetBookingRequest requestData = step("Подготовить данные для создания бронирования", () -> {
+        GetFullBookingRequest requestData = step("Подготовить данные для создания бронирования", () -> {
             BookingDates bookingDates = new BookingDates();
 
-            GetBookingRequest data = new GetBookingRequest();
+            GetFullBookingRequest data = new GetFullBookingRequest();
             data.setBookingdates(bookingDates);
             return data;
         });

@@ -8,9 +8,11 @@ import io.restassured.specification.ResponseSpecification;
 import static io.restassured.RestAssured.with;
 import static io.restassured.filter.log.LogDetail.ALL;
 import static io.restassured.http.ContentType.JSON;
+import static org.hamcrest.Matchers.is;
 
 public class GeneralSpec {
-    public static final RequestSpecification requestSpecificationWithAuth = with()
+
+    public static final RequestSpecification requestSpecificationWithBasicAuth = with()
             .filter(CustomAllureListener.withCustomTemplates())
             .header("Accept", "application/json")
             .header("Content-Type", "application/json")
@@ -28,6 +30,12 @@ public class GeneralSpec {
     public static final ResponseSpecification responseSpecification200 = new ResponseSpecBuilder()
             .expectStatusCode(200)
             .log(ALL)
+            .build();
+
+    public static final ResponseSpecification responseSpecification200WithExpectBody = new ResponseSpecBuilder()
+            .expectStatusCode(200)
+            .log(ALL)
+            .expectBody("body", is("Cannot read properties of null (reading 'checkin')"))
             .build();
 
     public static final ResponseSpecification responseSpecification201 = new ResponseSpecBuilder()
@@ -54,5 +62,4 @@ public class GeneralSpec {
             .expectStatusCode(500)
             .log(ALL)
             .build();
-
 }

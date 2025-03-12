@@ -6,6 +6,7 @@ import models.auth.TokenResponse;
 import models.booking.GetBookingResponse;
 import models.booking.GetFullBookingRequest;
 import models.booking.GetFullBookingWithoutAdditionalRequest;
+import models.booking.GetWithoutNameAndLastnameBookingRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -16,14 +17,14 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static specs.GeneralSpec.*;
 
-@DisplayName("Обновление текущего бронирования по ID")
+@DisplayName("Обновление текущего бронирования с частичной полезной нагрузкой")
 @Tag("booking_api")
-public class PutTests extends TestBase {
+public class PatchTests extends TestBase {
     final CreateBooking createBooking = new CreateBooking();
     final CreateAuth createAuth = new CreateAuth();
 
     @Test
-    @DisplayName("Удачное обновление всех данных бронирования при базовой авторизации, с полными данными")
+    @DisplayName("Обновление полных данных при базовой авторизации, по существующему ID")
     public void successfulUpdateBookingByIdWithBasicAuthTest() {
         GetBookingResponse testDataResponse = createBooking.successFullDataCreateBooking();
         GetFullBookingRequest testDataRequest = createBooking.getFullDataForCreateBooking();
@@ -32,7 +33,7 @@ public class PutTests extends TestBase {
                 given(requestSpecificationWithBasicAuth)
                         .body(testDataRequest)
                         .when()
-                        .put("/booking/" + testDataResponse.getBookingid())
+                        .patch("/booking/" + testDataResponse.getBookingid())
                         .then()
                         .spec(responseSpecification200)
                         .extract().as(GetFullBookingRequest.class));
@@ -49,10 +50,10 @@ public class PutTests extends TestBase {
     }
 
     @Test
-    @DisplayName("Удачное обновление части данных бронирования при авторизации по токену")
+    @DisplayName("Обновление частичных данных при авторизации по токену, по существующему ID")
     public void successfulUpdateBookingByIdWithTokenTest() {
         GetBookingResponse testDataResponse = createBooking.successFullDataCreateBooking();
-        GetFullBookingWithoutAdditionalRequest testDataRequest = createBooking.successDataForCreateBookingWithoutAdditionalNeeds();
+        GetWithoutNameAndLastnameBookingRequest testDataRequest = createBooking.successDataForCreateBookingWithoutNameAndLastname();
         TokenResponse testToken = createAuth.successfulCreateAuth();
 
         GetFullBookingRequest responseData = step("Отправить запрос на обновление данных по бронированию", () ->
@@ -60,20 +61,50 @@ public class PutTests extends TestBase {
                         .header("Cookie", "token=" + testToken.getToken())
                         .body(testDataRequest)
                         .when()
-                        .put("/booking/" + testDataResponse.getBookingid())
+                        .patch("/booking/" + testDataResponse.getBookingid())
                         .then()
                         .spec(responseSpecification200)
                         .extract().as(GetFullBookingRequest.class));
 
         step("Проверить данные в ответе", () -> {
-            assertThat(responseData.getFirstname()).isEqualTo(testDataRequest.getFirstname());
-            assertThat(responseData.getLastname()).isEqualTo(testDataRequest.getLastname());
+            assertThat(responseData.getFirstname()).isEqualTo(testDataResponse.getBooking().getFirstname());
+            assertThat(responseData.getLastname()).isEqualTo(testDataResponse.getBooking().getLastname());
             assertThat(responseData.getTotalprice()).isEqualTo(testDataRequest.getTotalprice());
             assertThat(responseData.getBookingdates().getCheckin()).isEqualTo(testDataRequest.getBookingdates().getCheckin());
             assertThat(responseData.getBookingdates().getCheckout()).isEqualTo(testDataRequest.getBookingdates().getCheckout());
             assertThat(responseData.isDepositpaid()).isEqualTo(testDataRequest.isDepositpaid());
-            assertThat(responseData.getAdditionalneeds()).isEqualTo(testDataResponse.getBooking().getAdditionalneeds());
+            assertThat(responseData.getAdditionalneeds()).isEqualTo(testDataRequest.getAdditionalneeds());
         });
+    }
+
+    @Test
+    @DisplayName("Обновление строковых данных со значением null при базовой авторизации по существующему ID")
+    public void successfulUpdateEmptyDataBookingByIdWithAuthTest() {
+        GetBookingResponse testDataResponse = createBooking.successFullDataCreateBooking();
+        GetFullBookingRequest testDataRequest = new GetFullBookingRequest();
+
+        step("Отправить запрос на обновление данных по бронированию", () ->
+                given(requestSpecificationWithBasicAuth)
+                        .body(testDataRequest)
+                        .when()
+                        .patch("/booking/" + testDataResponse.getBookingid())
+                        .then()
+                        .spec(responseSpecification200WithExpectBody));
+    }
+
+    @Test
+    @DisplayName("Обновление частичных данных без авторизации, по существующему ID")
+    public void successfulUpdateBookingByIdWithoutAuthTest() {
+        GetBookingResponse testDataResponse = createBooking.successFullDataCreateBooking();
+        GetFullBookingWithoutAdditionalRequest testDataRequest = createBooking.successDataForCreateBookingWithoutAdditionalNeeds();
+
+        step("Отправить запрос на обновление данных по бронированию", () ->
+                given(requestSpecificationWithoutAuth)
+                        .body(testDataRequest)
+                        .when()
+                        .patch("/booking/" + testDataResponse.getBookingid())
+                        .then()
+                        .spec(responseSpecification403));
     }
 
     @Test
@@ -85,23 +116,8 @@ public class PutTests extends TestBase {
                 given(requestSpecificationWithBasicAuth)
                         .body(testData)
                         .when()
-                        .put("/booking/" + -1)
+                        .patch("/booking/" + 0)
                         .then()
                         .spec(responseSpecification405));
-    }
-
-    @Test
-    @DisplayName("Неудачное обновление бронирования без авторизации, с актуальным ID")
-    public void unsuccessfulUpdateBookingById403Test() {
-        GetFullBookingRequest testData = createBooking.getFullDataForCreateBooking();
-        GetBookingResponse testDataResponse = createBooking.successFullDataCreateBooking();
-
-        step("Отправить запрос на удаление конкретного бронирования по идентификатору бронирования", () ->
-                given(requestSpecificationWithoutAuth)
-                        .body(testData)
-                        .when()
-                        .put("/booking/" + testDataResponse.getBookingid())
-                        .then()
-                        .spec(responseSpecification403));
     }
 }

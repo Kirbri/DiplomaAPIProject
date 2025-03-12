@@ -10,14 +10,15 @@ import org.junit.jupiter.api.Test;
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
-import static specs.GeneralSpec.*;
+import static specs.GeneralSpec.requestSpecificationWithoutAuth;
+import static specs.GeneralSpec.responseSpecification200;
 
-@DisplayName("Проверка авторизации через создание токена")
+@DisplayName("Создание нового токена аутентификации для использования при вызове запросов PUT, PATCH и DELETE в сервисе бронирования")
 @Tag("auth_api")
 public class AuthTests extends TestBase {
 
     @Test
-    @DisplayName("Successful creates a new auth token")
+    @DisplayName("Удачное создание токена аутентификации")
     public void successfulCreateTokenTest() {
         GenerateTokenLoginRequest requestData = step("Подготовить данные для создания токена", () -> {
             GenerateTokenLoginRequest data = new GenerateTokenLoginRequest();
@@ -36,12 +37,12 @@ public class AuthTests extends TestBase {
                         .extract().as(TokenResponse.class));
 
         step("Проверить данных в ответе", () -> {
-            assertThat(responseData.getToken()).isNotNull();
+            assertThat(responseData.getToken()).hasSize(15);
         });
     }
 
     @Test
-    @DisplayName("Unsuccessful creates a new auth token with code 200")
+    @DisplayName("Неудачное создание токена аутентификации с пустыми логином и паролем")
     public void unsuccessfulCreateTokenBadCredentialsTest() {
         GenerateTokenLoginRequest requestData = step("Подготовить данные для создания токена", () -> {
             GenerateTokenLoginRequest data = new GenerateTokenLoginRequest();

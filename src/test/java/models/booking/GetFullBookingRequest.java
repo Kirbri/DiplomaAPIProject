@@ -3,7 +3,7 @@ package models.booking;
 import lombok.Data;
 
 @Data
-public class GetBookingRequest {
+public class GetFullBookingRequest {
     String firstname, lastname, additionalneeds;
     int totalprice;
     boolean depositpaid;
