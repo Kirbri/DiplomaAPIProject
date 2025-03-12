@@ -1,8 +1,8 @@
 package tests.booking;
 
 import models.booking.BookingDates;
-import models.booking.GetBookingResponse;
-import models.booking.GetFullBookingRequest;
+import models.booking.BookingResponse;
+import models.booking.FullBookingRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -20,12 +20,12 @@ public class PostTests extends TestBase {
     @Test
     @DisplayName("Создание успешного бронирования с полными данными")
     public void successfulPostCreateBookingTest() {
-        GetFullBookingRequest requestData = step("Подготовить данные для создания бронирования", () -> {
+        FullBookingRequest requestData = step("Подготовить данные для создания бронирования", () -> {
             BookingDates bookingDates = new BookingDates();
             bookingDates.setCheckin("2025-01-01");
             bookingDates.setCheckout("2026-01-01");
 
-            GetFullBookingRequest data = new GetFullBookingRequest();
+            FullBookingRequest data = new FullBookingRequest();
             data.setFirstname("Jim");
             data.setLastname("Brown");
             data.setTotalprice(111);
@@ -35,14 +35,14 @@ public class PostTests extends TestBase {
             return data;
         });
 
-        GetBookingResponse responseData = step("Отправить запрос на создание нового бронирования", () ->
+        BookingResponse responseData = step("Отправить запрос на создание нового бронирования", () ->
                 given(requestSpecificationWithoutAuth)
                         .body(requestData)
                         .when()
                         .post("/booking")
                         .then()
                         .spec(responseSpecification200)
-                        .extract().as(GetBookingResponse.class));
+                        .extract().as(BookingResponse.class));
 
         step("Проверить данные в ответе", () -> {
             assertThat(responseData.getBookingid()).isNotEqualTo(0);
@@ -59,12 +59,12 @@ public class PostTests extends TestBase {
     @Test
     @DisplayName("Создание успешного бронирования с пустыми строковыми данными")
     public void successfulPostCreateBookingWithEmptyFieldsTest() {
-        GetFullBookingRequest requestData = step("Подготовить данные для создания бронирования", () -> {
+        FullBookingRequest requestData = step("Подготовить данные для создания бронирования", () -> {
             BookingDates bookingDates = new BookingDates();
             bookingDates.setCheckin("");
             bookingDates.setCheckout("");
 
-            GetFullBookingRequest data = new GetFullBookingRequest();
+            FullBookingRequest data = new FullBookingRequest();
             data.setFirstname("");
             data.setLastname("");
             data.setBookingdates(bookingDates);
@@ -72,14 +72,14 @@ public class PostTests extends TestBase {
             return data;
         });
 
-        GetBookingResponse responseData = step("Отправить запрос на создание нового бронирования", () ->
+        BookingResponse responseData = step("Отправить запрос на создание нового бронирования", () ->
                 given(requestSpecificationWithoutAuth)
                         .body(requestData)
                         .when()
                         .post("/booking")
                         .then()
                         .spec(responseSpecification200)
-                        .extract().as(GetBookingResponse.class));
+                        .extract().as(BookingResponse.class));
 
         step("Проверить данные в ответе", () -> {
             assertThat(responseData.getBookingid()).isNotEqualTo(0);
@@ -96,10 +96,10 @@ public class PostTests extends TestBase {
     @Test
     @DisplayName("Создание неуспешного бронирования со строковыми данными равными null")
     public void unsuccessfulPostCreateBooking500Test() {
-        GetFullBookingRequest requestData = step("Подготовить данные для создания бронирования", () -> {
+        FullBookingRequest requestData = step("Подготовить данные для создания бронирования", () -> {
             BookingDates bookingDates = new BookingDates();
 
-            GetFullBookingRequest data = new GetFullBookingRequest();
+            FullBookingRequest data = new FullBookingRequest();
             data.setBookingdates(bookingDates);
             return data;
         });

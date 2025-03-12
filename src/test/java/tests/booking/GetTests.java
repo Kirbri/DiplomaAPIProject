@@ -1,9 +1,9 @@
 package tests.booking;
 
 import api.CreateBooking;
-import models.booking.Bookingid;
-import models.booking.GetBookingResponse;
-import models.booking.GetFullBookingRequest;
+import models.booking.BookingidResponse;
+import models.booking.BookingResponse;
+import models.booking.FullBookingRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -26,13 +26,13 @@ public class GetTests extends TestBase {
     @Test
     @DisplayName("Получение всех действительных бронирований")
     public void successfulGetBookingIdsWithoutAuthTest() {
-        Bookingid[] responseData = step("Отправить запрос на получение бронирований", () ->
+        BookingidResponse[] responseData = step("Отправить запрос на получение бронирований", () ->
                 given(requestSpecificationWithoutAuth)
                         .when()
                         .get("/booking")
                         .then()
                         .spec(responseSpecification200)
-                        .extract().as(Bookingid[].class));
+                        .extract().as(BookingidResponse[].class));
 
         step("Проверить данные в ответе", () -> {
             assertThat(responseData[0].getBookingid()).isGreaterThan(0);
@@ -43,7 +43,7 @@ public class GetTests extends TestBase {
     @Test
     @DisplayName("Получение всех действительных бронирований по фамилии и имени c 0 результатом")
     public void successfulGetBookingIdsWithFilterNameThenEmptyResultsWithoutAuthTest() {
-        Bookingid[] responseData = step("Отправить запрос на получение бронирований по имени", () ->
+        BookingidResponse[] responseData = step("Отправить запрос на получение бронирований по имени", () ->
                 given(requestSpecificationWithoutAuth)
                         .when()
                         .queryParam("firstname", "sallyцуй23123ё!;%")
@@ -51,7 +51,7 @@ public class GetTests extends TestBase {
                         .get("/booking")
                         .then()
                         .spec(responseSpecification200)
-                        .extract().as(Bookingid[].class));
+                        .extract().as(BookingidResponse[].class));
 
         step("Проверить данные в ответе", () -> {
             assertThat(responseData.length).isEqualTo(0);
@@ -61,8 +61,8 @@ public class GetTests extends TestBase {
     @Test
     @DisplayName("Получение всех действительных бронирований по фамилии и имени с результатом")
     public void successfulGetBookingIdsWithFilterNameThenNotEmptyResultsWithoutAuthTest() {
-        GetBookingResponse testData = createBooking.successFullDataCreateBooking();
-        Bookingid[] responseData = step("Отправить запрос на получение бронирований по имени", () ->
+        BookingResponse testData = createBooking.successFullDataCreateBooking();
+        BookingidResponse[] responseData = step("Отправить запрос на получение бронирований по имени", () ->
                 given(requestSpecificationWithoutAuth)
                         .when()
                         .queryParam("firstname", testData.getBooking().getFirstname())
@@ -70,12 +70,12 @@ public class GetTests extends TestBase {
                         .get("/booking")
                         .then()
                         .spec(responseSpecification200)
-                        .extract().as(Bookingid[].class));
+                        .extract().as(BookingidResponse[].class));
 
         step("Проверить данные в ответе", () -> {
             assertThat(responseData.length).isGreaterThan(0);
             List<Integer> bookingIds = Arrays.stream(responseData)
-                    .map(Bookingid::getBookingid)
+                    .map(BookingidResponse::getBookingid)
                     .collect(Collectors.toList());
             assertThat(bookingIds).containsAnyOf(testData.getBookingid());
         });
@@ -84,7 +84,7 @@ public class GetTests extends TestBase {
     @Test
     @DisplayName("Получение всех действительных бронирований по дате заселения и выезда с результатом")
     public void successfulGetBookingIdsWithFilterCheckinCheckoutThenNotEmptyResultsWithoutAuthTest() {
-        Bookingid[] responseData = step("Отправить запрос на получение бронирований по дате заезда и выезда", () ->
+        BookingidResponse[] responseData = step("Отправить запрос на получение бронирований по дате заезда и выезда", () ->
                 given(requestSpecificationWithoutAuth)
                         .when()
                         .queryParam("checkin", "2014-01-13")
@@ -92,7 +92,7 @@ public class GetTests extends TestBase {
                         .get("/booking")
                         .then()
                         .spec(responseSpecification200)
-                        .extract().as(Bookingid[].class));
+                        .extract().as(BookingidResponse[].class));
 
         step("Проверить данные в ответе", () -> {
             assertThat(responseData.length).isGreaterThan(100);
@@ -127,15 +127,15 @@ public class GetTests extends TestBase {
     @Test
     @DisplayName("Получение информации о бронировании по действительному ID")
     public void successfulGetBookingByIdResult1WithoutAuthTest() {
-        GetBookingResponse testData = createBooking.successFullDataCreateBooking();
+        BookingResponse testData = createBooking.successFullDataCreateBooking();
 
-        GetFullBookingRequest responseData = step("Отправить запрос на получение конкретного бронирования по идентификатору бронирования", () ->
+        FullBookingRequest responseData = step("Отправить запрос на получение конкретного бронирования по идентификатору бронирования", () ->
                 given(requestSpecificationWithoutAuth)
                         .when()
                         .get("/booking/" + testData.getBookingid())
                         .then()
                         .spec(responseSpecification200)
-                        .extract().as(GetFullBookingRequest.class));
+                        .extract().as(FullBookingRequest.class));
 
         step("Проверить данные в ответе", () -> {
             assertThat(responseData.getFirstname()).isEqualTo(testData.getBooking().getFirstname());

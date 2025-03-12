@@ -3,9 +3,9 @@ package tests.booking;
 import api.CreateAuth;
 import api.CreateBooking;
 import models.auth.TokenResponse;
-import models.booking.GetBookingResponse;
-import models.booking.GetFullBookingRequest;
-import models.booking.GetFullBookingWithoutAdditionalRequest;
+import models.booking.BookingResponse;
+import models.booking.FullBookingRequest;
+import models.booking.FullBookingWithoutAdditionalRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -25,17 +25,17 @@ public class PutTests extends TestBase {
     @Test
     @DisplayName("Удачное обновление всех данных бронирования при базовой авторизации, с полными данными")
     public void successfulUpdateBookingByIdWithBasicAuthTest() {
-        GetBookingResponse testDataResponse = createBooking.successFullDataCreateBooking();
-        GetFullBookingRequest testDataRequest = createBooking.getFullDataForCreateBooking();
+        BookingResponse testDataResponse = createBooking.successFullDataCreateBooking();
+        FullBookingRequest testDataRequest = createBooking.getFullDataForCreateBooking();
 
-        GetFullBookingRequest responseData = step("Отправить запрос на обновление данных по бронированию", () ->
+        FullBookingRequest responseData = step("Отправить запрос на обновление данных по бронированию", () ->
                 given(requestSpecificationWithBasicAuth)
                         .body(testDataRequest)
                         .when()
                         .put("/booking/" + testDataResponse.getBookingid())
                         .then()
                         .spec(responseSpecification200)
-                        .extract().as(GetFullBookingRequest.class));
+                        .extract().as(FullBookingRequest.class));
 
         step("Проверить данные в ответе", () -> {
             assertThat(responseData.getFirstname()).isEqualTo(testDataRequest.getFirstname());
@@ -51,11 +51,11 @@ public class PutTests extends TestBase {
     @Test
     @DisplayName("Удачное обновление части данных бронирования при авторизации по токену")
     public void successfulUpdateBookingByIdWithTokenTest() {
-        GetBookingResponse testDataResponse = createBooking.successFullDataCreateBooking();
-        GetFullBookingWithoutAdditionalRequest testDataRequest = createBooking.successDataForCreateBookingWithoutAdditionalNeeds();
+        BookingResponse testDataResponse = createBooking.successFullDataCreateBooking();
+        FullBookingWithoutAdditionalRequest testDataRequest = createBooking.successDataForCreateBookingWithoutAdditionalNeeds();
         TokenResponse testToken = createAuth.successfulCreateAuth();
 
-        GetFullBookingRequest responseData = step("Отправить запрос на обновление данных по бронированию", () ->
+        FullBookingRequest responseData = step("Отправить запрос на обновление данных по бронированию", () ->
                 given(requestSpecificationWithoutAuth)
                         .header("Cookie", "token=" + testToken.getToken())
                         .body(testDataRequest)
@@ -63,7 +63,7 @@ public class PutTests extends TestBase {
                         .put("/booking/" + testDataResponse.getBookingid())
                         .then()
                         .spec(responseSpecification200)
-                        .extract().as(GetFullBookingRequest.class));
+                        .extract().as(FullBookingRequest.class));
 
         step("Проверить данные в ответе", () -> {
             assertThat(responseData.getFirstname()).isEqualTo(testDataRequest.getFirstname());
@@ -79,7 +79,7 @@ public class PutTests extends TestBase {
     @Test
     @DisplayName("Неудачное обновление бронирования при базовой авторизации, с некорректным ID")
     public void unsuccessfulUpdateBookingById405Test() {
-        GetFullBookingRequest testData = createBooking.getFullDataForCreateBooking();
+        FullBookingRequest testData = createBooking.getFullDataForCreateBooking();
 
         step("Отправить запрос на удаление конкретного бронирования по идентификатору бронирования", () ->
                 given(requestSpecificationWithBasicAuth)
@@ -93,8 +93,8 @@ public class PutTests extends TestBase {
     @Test
     @DisplayName("Неудачное обновление бронирования без авторизации, с актуальным ID")
     public void unsuccessfulUpdateBookingById403Test() {
-        GetFullBookingRequest testData = createBooking.getFullDataForCreateBooking();
-        GetBookingResponse testDataResponse = createBooking.successFullDataCreateBooking();
+        FullBookingRequest testData = createBooking.getFullDataForCreateBooking();
+        BookingResponse testDataResponse = createBooking.successFullDataCreateBooking();
 
         step("Отправить запрос на удаление конкретного бронирования по идентификатору бронирования", () ->
                 given(requestSpecificationWithoutAuth)

@@ -10,12 +10,12 @@ import static specs.GeneralSpec.responseSpecification200;
 public class CreateBooking {
 
     @Step("Создание бронирования со всеми заполненными полями")
-    public GetBookingResponse successFullDataCreateBooking() {
+    public BookingResponse successFullDataCreateBooking() {
         BookingDates bookingDates = new BookingDates();
         bookingDates.setCheckin("3025-12-31");
         bookingDates.setCheckout("5000-01-01");
 
-        GetFullBookingRequest data = new GetFullBookingRequest();
+        FullBookingRequest data = new FullBookingRequest();
         data.setFirstname("Jimbo");
         data.setLastname("Bird");
         data.setTotalprice(9_548_347);
@@ -29,16 +29,16 @@ public class CreateBooking {
                 .post("/booking")
                 .then()
                 .spec(responseSpecification200)
-                .extract().as(GetBookingResponse.class);
+                .extract().as(BookingResponse.class);
     }
 
     @Step("Данные для создания бронирования со всеми заполненными полями")
-    public GetFullBookingRequest getFullDataForCreateBooking() {
+    public FullBookingRequest getFullDataForCreateBooking() {
         BookingDates bookingDates = new BookingDates();
         bookingDates.setCheckin("1025-01-01");
         bookingDates.setCheckout("1050-12-31");
 
-        GetFullBookingRequest data = new GetFullBookingRequest();
+        FullBookingRequest data = new FullBookingRequest();
         data.setFirstname("Update_Jimbo");
         data.setLastname("Update_Bird");
         data.setTotalprice(8_457_923);
@@ -50,12 +50,12 @@ public class CreateBooking {
     }
 
     @Step("Данные для создания бронирования без полей дополнительных потребностей")
-    public GetFullBookingWithoutAdditionalRequest successDataForCreateBookingWithoutAdditionalNeeds() {
+    public FullBookingWithoutAdditionalRequest successDataForCreateBookingWithoutAdditionalNeeds() {
         BookingDates bookingDates = new BookingDates();
         bookingDates.setCheckin("1025-01-01");
         bookingDates.setCheckout("1050-12-31");
 
-        GetFullBookingWithoutAdditionalRequest data = new GetFullBookingWithoutAdditionalRequest();
+        FullBookingWithoutAdditionalRequest data = new FullBookingWithoutAdditionalRequest();
         data.setFirstname("UpdatePath");
         data.setLastname("UpdatePart");
         data.setTotalprice(5660);
@@ -66,12 +66,12 @@ public class CreateBooking {
     }
 
     @Step("Данные для создания бронирования без имени и фамилии")
-    public GetWithoutNameAndLastnameBookingRequest successDataForCreateBookingWithoutNameAndLastname() {
+    public WithoutNameAndLastnameBookingRequest successDataForCreateBookingWithoutNameAndLastname() {
         BookingDates bookingDates = new BookingDates();
         bookingDates.setCheckin("2025-08-12");
         bookingDates.setCheckout("2050-11-09");
 
-        GetWithoutNameAndLastnameBookingRequest data = new GetWithoutNameAndLastnameBookingRequest();
+        WithoutNameAndLastnameBookingRequest data = new WithoutNameAndLastnameBookingRequest();
         data.setTotalprice(5660);
         data.setDepositpaid(false);
         data.setBookingdates(bookingDates);

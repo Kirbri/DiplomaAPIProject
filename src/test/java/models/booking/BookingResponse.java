@@ -3,7 +3,7 @@ package models.booking;
 import lombok.Data;
 
 @Data
-public class GetBookingResponse {
+public class BookingResponse {
     int bookingid;
-    GetFullBookingRequest booking;
+    FullBookingRequest booking;
 }

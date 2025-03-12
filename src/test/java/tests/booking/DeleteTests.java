@@ -3,7 +3,7 @@ package tests.booking;
 import api.CreateAuth;
 import api.CreateBooking;
 import models.auth.TokenResponse;
-import models.booking.GetBookingResponse;
+import models.booking.BookingResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ public class DeleteTests extends TestBase {
     @Test
     @DisplayName("Удачное удаление бронирования при базовой авторизации и проверкой того, что удалённое бронирование не найдено в системе")
     public void successfulDeleteBookingByIdWithBasicAuthTest() {
-        GetBookingResponse testData = createBooking.successFullDataCreateBooking();
+        BookingResponse testData = createBooking.successFullDataCreateBooking();
         step("Отправить запрос на удаление конкретного бронирования по идентификатору бронирования", () ->
                 given(requestSpecificationWithBasicAuth)
                         .when()
@@ -41,7 +41,7 @@ public class DeleteTests extends TestBase {
     @Test
     @DisplayName("Удачное удаление бронирования при авторизации по токену и проверкой того, что удалённое бронирование не найдено в системе")
     public void successfulDeleteBookingByIdWithTokenTest() {
-        GetBookingResponse testData = createBooking.successFullDataCreateBooking();
+        BookingResponse testData = createBooking.successFullDataCreateBooking();
         TokenResponse testToken = createAuth.successfulCreateAuth();
 
         step("Отправить запрос на удаление конкретного бронирования по идентификатору бронирования", () ->
@@ -63,7 +63,7 @@ public class DeleteTests extends TestBase {
     @Test
     @DisplayName("Неудачное удаление бронирования при отправке запроса без передачи данных по авторизации или токена")
     public void unsuccessfulDeleteBookingByIdWithoutAuth403Test() {
-        GetBookingResponse testData = createBooking.successFullDataCreateBooking();
+        BookingResponse testData = createBooking.successFullDataCreateBooking();
         step("Отправить запрос на удаление конкретного бронирования по идентификатору бронирования", () ->
                 given(requestSpecificationWithoutAuth)
                         .when()
