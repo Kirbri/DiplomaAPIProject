@@ -21,18 +21,15 @@ public class PostTests extends TestBase {
     @DisplayName("Создание успешного бронирования с полными данными")
     public void successfulPostCreateBookingTest() {
         FullBookingRequest requestData = step("Подготовить данные для создания бронирования", () -> {
-            BookingDates bookingDates = new BookingDates();
-            bookingDates.setCheckin("2025-01-01");
-            bookingDates.setCheckout("2026-01-01");
+            BookingDates bookingDates = new BookingDates("2025-01-01", "2026-01-01");
 
-            FullBookingRequest data = new FullBookingRequest();
-            data.setFirstname("Jim");
-            data.setLastname("Brown");
-            data.setTotalprice(111);
-            data.setDepositpaid(true);
-            data.setBookingdates(bookingDates);
-            data.setAdditionalneeds("Breakfast");
-            return data;
+            return FullBookingRequest.builder()
+                    .firstname("Jim")
+                    .lastname("Brown")
+                    .totalprice(111)
+                    .depositpaid(true)
+                    .bookingdates(bookingDates)
+                    .additionalneeds("Breakfast").build();
         });
 
         BookingResponse responseData = step("Отправить запрос на создание нового бронирования", () ->
@@ -60,16 +57,13 @@ public class PostTests extends TestBase {
     @DisplayName("Создание успешного бронирования с пустыми строковыми данными")
     public void successfulPostCreateBookingWithEmptyFieldsTest() {
         FullBookingRequest requestData = step("Подготовить данные для создания бронирования", () -> {
-            BookingDates bookingDates = new BookingDates();
-            bookingDates.setCheckin("");
-            bookingDates.setCheckout("");
+            BookingDates bookingDates = new BookingDates("", "");
 
-            FullBookingRequest data = new FullBookingRequest();
-            data.setFirstname("");
-            data.setLastname("");
-            data.setBookingdates(bookingDates);
-            data.setAdditionalneeds("");
-            return data;
+            return FullBookingRequest.builder()
+                    .firstname("")
+                    .lastname("")
+                    .bookingdates(bookingDates)
+                    .additionalneeds("").build();
         });
 
         BookingResponse responseData = step("Отправить запрос на создание нового бронирования", () ->
@@ -99,9 +93,8 @@ public class PostTests extends TestBase {
         FullBookingRequest requestData = step("Подготовить данные для создания бронирования", () -> {
             BookingDates bookingDates = new BookingDates();
 
-            FullBookingRequest data = new FullBookingRequest();
-            data.setBookingdates(bookingDates);
-            return data;
+            return FullBookingRequest.builder()
+                    .bookingdates(bookingDates).build();
         });
 
         step("Отправить запрос на создание нового бронирования и проверить код ответа", () ->

@@ -1,5 +1,6 @@
 package tests;
 
+import data.AuthData;
 import models.auth.GenerateTokenLoginRequest;
 import models.auth.TokenResponse;
 import models.auth.UnsuccessfulTokenResponse;
@@ -16,14 +17,14 @@ import static specs.GeneralSpec.responseSpecification200;
 @DisplayName("Создание нового токена аутентификации для использования при вызове запросов PUT, PATCH и DELETE в сервисе бронирования")
 @Tag("auth_api")
 public class AuthTests extends TestBase {
+    AuthData authData = new AuthData();
 
     @Test
     @DisplayName("Удачное создание токена аутентификации")
     public void successfulCreateTokenTest() {
         GenerateTokenLoginRequest requestData = step("Подготовить данные для создания токена", () -> {
-            GenerateTokenLoginRequest data = new GenerateTokenLoginRequest();
-            data.setUsername("admin");
-            data.setPassword("password123");
+            GenerateTokenLoginRequest data = new GenerateTokenLoginRequest(authData.username, authData.password);
+
             return data;
         });
 
@@ -45,9 +46,8 @@ public class AuthTests extends TestBase {
     @DisplayName("Неудачное создание токена аутентификации с пустыми логином и паролем")
     public void unsuccessfulCreateTokenBadCredentialsTest() {
         GenerateTokenLoginRequest requestData = step("Подготовить данные для создания токена", () -> {
-            GenerateTokenLoginRequest data = new GenerateTokenLoginRequest();
-            data.setUsername("");
-            data.setPassword("");
+            GenerateTokenLoginRequest data = new GenerateTokenLoginRequest("", "");
+
             return data;
         });
         UnsuccessfulTokenResponse responseData = step("Отправить запрос на создание токена аутентификации", () ->

@@ -1,9 +1,9 @@
-# <p align="center">Проект по автоматизации API тестовых сценариев для сайта [Restful-Booker]([https://www.avito.ru/](https://restful-booker.herokuapp.com/))</p>
+# <p align="center">Проект по автоматизации API тестовых сценариев для сайта [Restful-Booker](https://restful-booker.herokuapp.com/)</p>
 
 > Restful-Booker - тестовая API-площадка по бронированию, созданная Марком Уинтерингемом.
 >
 <p align="center">
-<img title="restful-booker" src="src/test/resources/screenshot/Restful-booker.png" width="950">
+<img title="restful-booker" src="images/screenshot/Restful-booker.png" width="950">
 </p>
 
 <a id="table_of_contents"></a>
@@ -74,7 +74,7 @@ ____
 Для запуска сборки необходимо перейти в раздел Build with Parameters и нажать кнопку Build
 
 <p align="center">  
-<a href="https://jenkins.autotests.cloud/job/011-Kornilova_Ann_qa_guru-java_23/"><img src="src/test/resources/screenshot/Jenkins_1.png" alt="Jenkins" width="950"/></a>  
+<a href="https://jenkins.autotests.cloud/job/011-Kornilova_Ann_qa_guru-java_23/"><img src="images/screenshot/Jenkins_1.png" alt="Jenkins" width="950"/></a>  
 </p>
 
 <a id="jenkins_parameters"></a>
@@ -86,7 +86,7 @@ ____
 - **DEVICE_NAME** - модель телефона
 
 <p align="center">  
-<a href="https://jenkins.autotests.cloud/job/011-Kornilova_Ann_qa_guru-java_23/build?delay=0sec"><img src="src/test/resources/screenshot/Jenkins_2.png" alt="Jenkins" width="950"/></a>  
+<a href="https://jenkins.autotests.cloud/job/011-Kornilova_Ann_qa_guru-java_23/build?delay=0sec"><img src="images/screenshot/Jenkins_2.png" alt="Jenkins" width="950"/></a>  
 </p>
 
 <a href="#table_of_contents">Наверх</a>
@@ -125,14 +125,21 @@ flowchart LR
 ```
 
 ### Локально
+<details>
+
+<summary>Раскройте, для просмотра вариантов локального запуска</summary>
 
 **Локальный запуск с параметрами по умолчанию**
 
 ```bash  
 gradle clean {task}
 ```
+</details>
 
 ### Удалённо
+<details>
+
+<summary>Раскройте, для просмотра вариантов удалённого запуска</summary>
 
 **Пример локального запуска с указанием среды выполнения**
 
@@ -148,6 +155,7 @@ clean
 ${TASK}
 -Durl=${URL} -DloginRemote=${LOGIN_REMOTE}
 ```
+</details>
 
 <a href="#table_of_contents">Наверх</a>
 
@@ -159,7 +167,7 @@ _____
 ### Основная страница отчёта
 
 <p align="center">  
-<img title="Allure Overview Dashboard" src="src/test/resources/screenshot/Allure_1.png" width="850">  
+<img title="Allure Overview Dashboard" src="images/screenshot/Allure_1.png" width="850">  
 </p>  
 
 ___
@@ -170,7 +178,7 @@ ___
 ### Allure TestOps Dashboard
 
 <p align="center">  
-<img title="Allure TestOps Dashboard" src="src/test/resources/screenshot/Allure_TestOps_1.png" width="850">  
+<img title="Allure TestOps Dashboard" src="images/screenshot/Allure_TestOps_1.png" width="850">  
 </p>  
 ____
 
@@ -181,7 +189,7 @@ ____
 ###  <a name="Telegram"> Уведомление в Telegram </a>
 
 <p align="center">  
-<img title="Allure Overview Dashboard" src="src/test/resources/screenshot/Telegram.png" width="550">  
+<img title="Allure Overview Dashboard" src="images/screenshot/Telegram.png" width="550">  
 </p>
 
 <a href="#table_of_contents">Наверх</a>
@@ -190,7 +198,7 @@ ____
 ###  <a name="Mail"> Уведомление на почту </a>
 
 <p align="center">  
-<img title="Allure Overview Dashboard" src="src/test/resources/screenshot/Mail.png" width="550">  
+<img title="Allure Overview Dashboard" src="images/screenshot/Mail.png" width="550">  
 </p>
 
 <a href="#table_of_contents">Наверх</a>

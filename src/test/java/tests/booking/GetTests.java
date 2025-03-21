@@ -1,8 +1,8 @@
 package tests.booking;
 
 import api.CreateBooking;
-import models.booking.BookingidResponse;
 import models.booking.BookingResponse;
+import models.booking.BookingidResponse;
 import models.booking.FullBookingRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;

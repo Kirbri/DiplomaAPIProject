@@ -11,20 +11,16 @@ public class CreateBooking {
 
     @Step("Создание бронирования со всеми заполненными полями")
     public BookingResponse successFullDataCreateBooking() {
-        BookingDates bookingDates = new BookingDates();
-        bookingDates.setCheckin("3025-12-31");
-        bookingDates.setCheckout("5000-01-01");
-
-        FullBookingRequest data = new FullBookingRequest();
-        data.setFirstname("Jimbo");
-        data.setLastname("Bird");
-        data.setTotalprice(9_548_347);
-        data.setDepositpaid(false);
-        data.setBookingdates(bookingDates);
-        data.setAdditionalneeds("Breakfast, diner");
+        BookingDates bookingDates = new BookingDates("3025-12-31", "5000-01-01");
 
         return given(requestSpecificationWithBasicAuth)
-                .body(data)
+                .body(FullBookingRequest.builder()
+                        .firstname("Jimbo")
+                        .lastname("Bird")
+                        .totalprice(9_548_347)
+                        .depositpaid(false)
+                        .bookingdates(bookingDates)
+                        .additionalneeds("Breakfast, diner").build())
                 .when()
                 .post("/booking")
                 .then()
@@ -34,49 +30,39 @@ public class CreateBooking {
 
     @Step("Данные для создания бронирования со всеми заполненными полями")
     public FullBookingRequest getFullDataForCreateBooking() {
-        BookingDates bookingDates = new BookingDates();
-        bookingDates.setCheckin("1025-01-01");
-        bookingDates.setCheckout("1050-12-31");
+        BookingDates bookingDates = new BookingDates("1025-01-01", "1050-12-31");
 
-        FullBookingRequest data = new FullBookingRequest();
-        data.setFirstname("Update_Jimbo");
-        data.setLastname("Update_Bird");
-        data.setTotalprice(8_457_923);
-        data.setDepositpaid(true);
-        data.setBookingdates(bookingDates);
-        data.setAdditionalneeds("No");
-
-        return data;
+        return FullBookingRequest.builder()
+                .firstname("Update_Jimbo")
+                .lastname("Update_Bird")
+                .totalprice(8_457_923)
+                .depositpaid(true)
+                .bookingdates(bookingDates)
+                .additionalneeds("No").build();
     }
 
     @Step("Данные для создания бронирования без полей дополнительных потребностей")
     public FullBookingWithoutAdditionalRequest successDataForCreateBookingWithoutAdditionalNeeds() {
-        BookingDates bookingDates = new BookingDates();
-        bookingDates.setCheckin("1025-01-01");
-        bookingDates.setCheckout("1050-12-31");
+        BookingDates bookingDates = new BookingDates("1025-01-01", "1050-12-31");
 
-        FullBookingWithoutAdditionalRequest data = new FullBookingWithoutAdditionalRequest();
-        data.setFirstname("UpdatePath");
-        data.setLastname("UpdatePart");
-        data.setTotalprice(5660);
-        data.setDepositpaid(false);
-        data.setBookingdates(bookingDates);
-
-        return data;
+        return FullBookingWithoutAdditionalRequest.builder()
+                .firstname("UpdatePath")
+                .lastname("UpdatePart")
+                .totalprice(5660)
+                .depositpaid(false)
+                .bookingdates(bookingDates)
+                .build();
     }
 
     @Step("Данные для создания бронирования без имени и фамилии")
     public WithoutNameAndLastnameBookingRequest successDataForCreateBookingWithoutNameAndLastname() {
-        BookingDates bookingDates = new BookingDates();
-        bookingDates.setCheckin("2025-08-12");
-        bookingDates.setCheckout("2050-11-09");
+        BookingDates bookingDates = new BookingDates("2025-08-12", "2050-11-09");
 
-        WithoutNameAndLastnameBookingRequest data = new WithoutNameAndLastnameBookingRequest();
-        data.setTotalprice(5660);
-        data.setDepositpaid(false);
-        data.setBookingdates(bookingDates);
-        data.setAdditionalneeds("NO");
-
-        return data;
+        return WithoutNameAndLastnameBookingRequest.builder()
+                .totalprice(5660)
+                .depositpaid(false)
+                .bookingdates(bookingDates)
+                .additionalneeds("NO")
+                .build();
     }
 }

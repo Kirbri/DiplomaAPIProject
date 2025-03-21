@@ -1,5 +1,6 @@
 package specs;
 
+import data.AuthData;
 import helpers.CustomAllureListener;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.specification.RequestSpecification;
@@ -11,12 +12,13 @@ import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.is;
 
 public class GeneralSpec {
+    private static final String authorization = new AuthData().authorization;
 
     public static final RequestSpecification requestSpecificationWithBasicAuth = with()
             .filter(CustomAllureListener.withCustomTemplates())
             .header("Accept", "application/json")
             .header("Content-Type", "application/json")
-            .header("Authorization", "Basic YWRtaW46cGFzc3dvcmQxMjM=")
+            .header("Authorization", authorization)
             .log().all()
             .contentType(JSON);
 

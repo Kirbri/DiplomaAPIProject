@@ -1,5 +1,6 @@
 package api;
 
+import data.AuthData;
 import models.auth.GenerateTokenLoginRequest;
 import models.auth.TokenResponse;
 
@@ -8,11 +9,10 @@ import static specs.GeneralSpec.requestSpecificationWithoutAuth;
 import static specs.GeneralSpec.responseSpecification200;
 
 public class CreateAuth {
+    AuthData authData = new AuthData();
 
     public TokenResponse successfulCreateAuth() {
-        GenerateTokenLoginRequest requestData = new GenerateTokenLoginRequest();
-        requestData.setUsername("admin");
-        requestData.setPassword("password123");
+        GenerateTokenLoginRequest requestData = new GenerateTokenLoginRequest(authData.username, authData.password);
 
         return given(requestSpecificationWithoutAuth)
                 .body(requestData)
