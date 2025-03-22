@@ -24,7 +24,7 @@ ___
 <a id="tools"></a>
 ## <a name="Технологии и инструменты">Технологии и инструменты на проекте</a>
 
-- Проект написан на **Java** с использованием фреймфворка **Selenide**
+- Проект написан на **Java** с использованием фреймфворка **Rest Assured**
 - Для модульного тестирования использовался **JUnit 5**
 - <a href="#allure">Отчётность</a> представлена в **Allure Report**
 - <a href="#jenkins">Непрерывная интеграция</a> и непрерывное развертывание реализовано через **Jenkins**
@@ -41,7 +41,7 @@ ___
 | <a href="https://gradle.org/"><img align="center" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/gradle/gradle-original.svg" height="40" weight="40" alt="Gradle"/> | Gradle — система автоматической сборки.                                                                                                       |
 | <a href="https://www.jenkins.io/"><img align="center" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/jenkins/jenkins-original.svg" height="40" weight="40" alt="Jenkins"/> | Jenkins — программная система предназначенная для обеспечения процесса непрерывной интеграции программного обеспечения.                       |
 | <a href="https://github.com/allure-framework"><img align="center" src="https://avatars.githubusercontent.com/u/5879127?s=200&v=4" height="40" weight="40" alt="Allure"/> | Allure - фреймворк для создания простых и понятных отчётов автотестов.                                                                        |
-| <a href="https://selenide.org/"><img align="center" src="https://avatars.githubusercontent.com/u/43955696?s=200&v=4" height="40" weight="40" alt="Selenide"/> | Selenide - это фреймворк для автоматизированного тестирования веб-приложений на основе Selenium WebDriver.                                    |
+| <a href="https://rest-assured.io/"><img align="center" src="https://rest-assured.io/img/logo-transparent.png" height="40" weight="40" alt="Rest Assured"/> | Rest Assured - библиотека Java для тестирования RESTful API.                                    |
 | <a href="https://qameta.io/"><img align="center" src="https://avatars.githubusercontent.com/u/19841150?s=200&v=4" height="40" weight="40" alt="TestOps"/> | Allure Testops - полноценное управление тестированием, ориентированное на автоматизацию, согласованное с DevOps.                              |
 | <a href="https://telegram.org/"><img align="center" src="https://upload.wikimedia.org/wikipedia/commons/8/83/Telegram_2019_Logo.svg" height="40" weight="40" alt="Telegram"/>| Telegram — кроссплатформенный мессенджер.                                                                                                     |
 
@@ -118,44 +118,24 @@ flowchart LR
     E --> H[environment.properties]
     F --> H[environment.properties]
     G --> H[environment.properties]
-    H --> I[local]
-    H --> J[remote]
-    J --> K[-Durl]
-    K --> L[-DloginRemote]
+    H --> I[-Dusername -Dpassword -Dauthorization]
+
 ```
 
-### Локально
-<details>
-
-<summary>Раскройте, для просмотра вариантов локального запуска</summary>
-
-**Локальный запуск с параметрами по умолчанию**
+**Пример запуска на локальной машине**
 
 ```bash  
-gradle clean {task}
-```
-</details>
-
-### Удалённо
-<details>
-
-<summary>Раскройте, для просмотра вариантов удалённого запуска</summary>
-
-**Пример локального запуска с указанием среды выполнения**
-
-```bash  
-clean
-booking_api_test
-"-Durl=selenoid.autotests.cloud" -DloginRemote=login:password
+gradle clean
+{task}
+-Dusername=USERNAME -Dpassword=PASSWORD "-Dauthorization=AUTHORIZATION"
 ```
 
-**Пример удалённого запуск через *Jenkins***
+**Пример запуска через *Jenkins***
 ```bash
 clean
 ${TASK}
--Durl=${URL} -DloginRemote=${LOGIN_REMOTE}
+-Dusername=${USERNAME} -Dpassword=${PASSWORD} "-Dauthorization=${AUTHORIZATION}"
 ```
-</details>
 
 <a href="#table_of_contents">Наверх</a>
 
